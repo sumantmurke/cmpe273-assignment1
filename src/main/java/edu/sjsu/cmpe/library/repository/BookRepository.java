@@ -58,4 +58,11 @@ public class BookRepository implements BookRepositoryInterface {
 	return bookInMemoryMap.get(isbn);
     }
 
+    public void deleteBook(Book book)
+    {
+    	Long isbn = book.getIsbn();
+    	bookInMemoryMap.remove(isbn, book);
+    	
+    	
+    }
 }

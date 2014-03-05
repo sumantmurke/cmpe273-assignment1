@@ -8,6 +8,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.DELETE;
+
+
 
 import com.yammer.dropwizard.jersey.params.LongParam;
 import com.yammer.metrics.annotation.Timed;
@@ -58,10 +61,32 @@ public class BookResource {
 	String location = "/books/" + savedBook.getIsbn();
 	BookDto bookResponse = new BookDto(savedBook);
 	bookResponse.addLink(new LinkDto("view-book", location, "GET"));
-	bookResponse.addLink(new LinkDto("update-book", location, "POST"));
+	bookResponse.addLink(new LinkDto("update-book", location, "PUT"));
+	bookResponse.addLink(new LinkDto("create-book", location, "POST"));
+	bookResponse.addLink(new LinkDto("delete-book", location, "DELETE"));
 	// Add other links if needed
 
 	return Response.status(201).entity(bookResponse).build();
     }
+    
+    
+   
+    @DELETE
+    @Path("/{isbn}")
+    @Timed(name = "delete-book")
+   public Response deleteBook(@PathParam("isbn") LongParam isbn) {
+    // public BookDto getBookByIsbn(@PathParam("isbn") LongParam isbn1) {
+    	Book book = bookRepository.getBookByISBN(isbn.get());
+    	bookRepository.deleteBook(book);
+  System.out.println("Book has been deleted");
+    	BookDto bookResponse = new BookDto(book);
+    	bookResponse.addLink(new LinkDto("create-book", "isbn", "POST"));
+    	return Response.status(204).entity(bookResponse).build();   
+    }
+    		
+    		
+   
+    
+    
 }
 

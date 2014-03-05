@@ -28,5 +28,8 @@ public interface BookRepositoryInterface {
      */
     Book getBookByISBN(Long isbn);
 
+
+	void deleteBook(Book book);
+
     // TODO: add other operations here!
 }
