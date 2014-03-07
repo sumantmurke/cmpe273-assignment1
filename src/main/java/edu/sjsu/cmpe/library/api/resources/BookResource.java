@@ -6,11 +6,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
 
 
+//import org.eclipse.jetty.http.HttpStatus;
+
+
+import java.util.*;
 
 import com.yammer.dropwizard.jersey.params.LongParam;
 import com.yammer.metrics.annotation.Timed;
@@ -59,14 +65,31 @@ public class BookResource {
 	Book savedBook = bookRepository.saveBook(request);
 
 	String location = "/books/" + savedBook.getIsbn();
+	
+	/*
 	BookDto bookResponse = new BookDto(savedBook);
 	bookResponse.addLink(new LinkDto("view-book", location, "GET"));
 	bookResponse.addLink(new LinkDto("update-book", location, "PUT"));
 	bookResponse.addLink(new LinkDto("create-book", location, "POST"));
 	bookResponse.addLink(new LinkDto("delete-book", location, "DELETE"));
 	// Add other links if needed
+*/
+	//return Response.status(201).entity(bookResponse).build();
+	
+	
+	
+    Map<String, Object> responseMap = new HashMap<String, Object>();
+    List<LinkDto> links = new ArrayList<LinkDto>();
+    links.add(new LinkDto("view-book", location, "GET"));
+    links.add(new LinkDto("update-book",location,"PUT"));
+    links.add(new LinkDto("delete-book",location,"DELETE"));
+    links.add(new LinkDto("create-review",location+ "/reviews","POST"));
 
-	return Response.status(201).entity(bookResponse).build();
+    responseMap.put("links", links);
+
+      return Response.status(201).entity(responseMap).build();
+
+
     }
     
     
@@ -78,13 +101,45 @@ public class BookResource {
     // public BookDto getBookByIsbn(@PathParam("isbn") LongParam isbn1) {
     	Book book = bookRepository.getBookByISBN(isbn.get());
     	bookRepository.deleteBook(book);
-  System.out.println("Book has been deleted");
-    	BookDto bookResponse = new BookDto(book);
+       // System.out.println("Book has been deleted");
+    	
+  /*
+        BookDto bookResponse = new BookDto(book);
     	bookResponse.addLink(new LinkDto("create-book", "isbn", "POST"));
-    	return Response.status(204).entity(bookResponse).build();   
+    	//return Response.status(204).entity(bookResponse).build();   
+    */	
+    
+    	 Map<String, Object> responseMap = new HashMap<String, Object>();
+    	 List<LinkDto> links = new ArrayList<LinkDto>();
+    	 links.add(new LinkDto("create-book", "/books", "POST"));;
+    	 responseMap.put("links", links);
+       	 return Response.status(200).entity(responseMap).build();
     }
     		
-    		
+   @PUT
+   @Path("/{isbn}")
+   @Timed(name= "update-book")
+   public Response updateBook(@PathParam("isbn") LongParam isbn,@QueryParam("status") String status){
+	   System.out.println("inside put API"); 
+	   Book book = bookRepository.getBookByISBN(isbn.get());
+	   book.setStatus(status);
+	   System.out.println(" The current status is : "+ book.getStatus());
+	   Map<String, Object> responseMap = new HashMap<String, Object>();
+	    List<LinkDto> links = new ArrayList<LinkDto>();
+	    links.add(new LinkDto("view-book", "/books/" + book.getIsbn(), "GET"));
+	    links.add(new LinkDto("update-book","/books/" + book.getIsbn(),"PUT"));
+	    links.add(new LinkDto("delete-book","/books/" + book.getIsbn(),"DELETE"));
+	    links.add(new LinkDto("create-review","/books/" + book.getIsbn() + "/reviews","POST"));
+
+	    responseMap.put("links", links);
+
+	      return Response.status(200).entity(responseMap).build();
+	   //return null;
+	   
+	   
+	   
+	  
+   }
    
     
     

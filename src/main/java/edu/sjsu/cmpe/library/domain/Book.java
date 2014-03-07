@@ -6,7 +6,7 @@ public class Book {
     private String title;
     private String language;
     private String status;
-  //  private String publication_date;
+    private String publication_date;
     private String authors[];
     // add more fields here
 
@@ -52,6 +52,14 @@ public class Book {
     public void setStatus(String status) {
     	this.status= status;
         }
+    
+    public String getPublication_Date(){
+    	return publication_date;
+    }
+    public void setPublication_Date(String publication_date){
+    	this.publication_date = publication_date;
+    	
+    }
     
    /*
     public String[] getAuthors() {
