@@ -52,9 +52,10 @@ public class BookResource {
 	bookResponse.addLink(new LinkDto("view-book", "/books/" + book.getIsbn(),
 		"GET"));
 	bookResponse.addLink(new LinkDto("update-book",
-		"/books/" + book.getIsbn(), "POST"));
-	// add more links
-
+		"/books/" + book.getIsbn(), "PUT"));
+	bookResponse.addLink(new LinkDto("delete-book", "/books/"+ book.getIsbn(),"DELETE" ));
+	bookResponse.addLink(new LinkDto("create-review", "/books/"+ book.getIsbn() + "/reviews", "POST") );
+	
 	return bookResponse;
     }
 
@@ -120,10 +121,10 @@ public class BookResource {
    @Path("/{isbn}")
    @Timed(name= "update-book")
    public Response updateBook(@PathParam("isbn") LongParam isbn,@QueryParam("status") String status){
-	   System.out.println("inside put API"); 
+	  // System.out.println("inside put API"); 
 	   Book book = bookRepository.getBookByISBN(isbn.get());
 	   book.setStatus(status);
-	   System.out.println(" The current status is : "+ book.getStatus());
+	   //System.out.println(" The current status is : "+ book.getStatus());
 	   Map<String, Object> responseMap = new HashMap<String, Object>();
 	    List<LinkDto> links = new ArrayList<LinkDto>();
 	    links.add(new LinkDto("view-book", "/books/" + book.getIsbn(), "GET"));
@@ -134,13 +135,19 @@ public class BookResource {
 	    responseMap.put("links", links);
 
 	      return Response.status(200).entity(responseMap).build();
-	   //return null;
-	   
-	   
-	   
-	  
-   }
+	 }
    
+   @POST
+   @Path("/{isbn}/reviews")
+   @Timed(name= "create-reviews")
+   public Response createReviews(@PathParam("isbn") LongParam isbn){
+	
+	   
+	   
+	   return null;
+	   
+	   
+   }
     
     
 }
