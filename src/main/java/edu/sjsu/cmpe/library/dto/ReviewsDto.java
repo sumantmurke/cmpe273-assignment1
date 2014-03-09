@@ -12,7 +12,7 @@ public class ReviewsDto extends LinksDto{
 
     public ReviewsDto(List<Review> review) {
     	super();
-    	this.review = review;
+    	this.setReview(review);
         }
     
 
@@ -29,5 +29,6 @@ public class ReviewsDto extends LinksDto{
      */
     public void setReview(List<Review> review) {
 	this.review = review;
+	
     }
 }

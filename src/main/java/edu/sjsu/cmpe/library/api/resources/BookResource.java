@@ -159,7 +159,7 @@ public class BookResource {
 	  // Review savedReview = bookRepository.saveReview(reviewRequest);
 	   
 	   String location = "/books/" + book.getIsbn() +"/reviews/" + reviewRequest.getId() ;
-	   
+	   System.out.println("my comment"+ reviewRequest.getComment());
 	   Map<String, Object> responseMap = new HashMap<String, Object>();
 	   List<LinkDto> links = new ArrayList<LinkDto>();
 	   links.add(new LinkDto("view-review", location, "GET"));
@@ -194,6 +194,50 @@ public class BookResource {
 	   
    }
     */
-    
+   /*
+   @GET
+   @Path("/{isbn}/reviews/{review_id}")
+   @Timed(name = "view-reviews")
+
+   public Response viewReview (@PathParam("isbn") LongParam isbn,@PathParam("review_id") int reviewid ) {
+    int i=0;
+   	Book book = bookRepository.getBookByISBN(isbn.get());
+   	
+   	/*
+      	ReviewDto reviewResponse = new ReviewDto(book.getbookReview(reviewid));
+   	reviewResponse.addLink(new LinkDto("view-book-review", "/books/" + book.getIsbn()+"/reviews/", "GET"));
+
+   	return reviewResponse;
+   
+   	while (book.getbookReview(reviewid).getId()!=reviewid)
+	{
+		i++;
+	}
+   	
+   	
+    ReviewDto reviewResponse = new ReviewDto(book.getbookReview(reviewid));
+	   reviewResponse.addLink(new LinkDto("view-reviews", "/books/" + book.getIsbn() + "/reviews/" + reviewid , "GET"));
+	return Response.status(200).entity(reviewResponse).build();
+	   
+}
+  */
+   
+   @GET
+   @Path("/{isbn}/reviews")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Timed(name = "view-all-reviews")
+   public Response viewAllReviews(@PathParam("isbn") LongParam isbn) {
+       
+           Book book = bookRepository.getBookByISBN(isbn.get());
+           List<Review> reviews = book.getReview();
+
+           ReviewsDto reviewsResponse = new ReviewsDto(reviews);
+
+           return Response.status(200).entity(reviewsResponse).build();
+
+       
+   }
+   
+   
 }
 
