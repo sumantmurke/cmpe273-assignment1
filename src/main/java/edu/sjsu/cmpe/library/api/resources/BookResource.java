@@ -50,6 +50,7 @@ public class BookResource {
     /** bookRepository instance */
     private final BookRepositoryInterface bookRepository;
     private int reviewId =1; 
+    private static int author_id = 1;
     /**
      * BookResource constructor
      * 
@@ -72,9 +73,6 @@ public class BookResource {
 		"/books/" + book.getIsbn(), "PUT"));
 	bookResponse.addLink(new LinkDto("delete-book", "/books/"+ book.getIsbn(),"DELETE" ));
 	bookResponse.addLink(new LinkDto("create-review", "/books/"+ book.getIsbn() + "/reviews", "POST") );
-	if (book.getReview().size() > 0) {
-        bookResponse.addLink(new LinkDto("view-all-reviews", "/books/" + book.getIsbn() +"/reviews", "GET"));
-	}
 	return bookResponse;
     }
 
@@ -83,6 +81,7 @@ public class BookResource {
     public Response createBook(Book request) {
 	// Store the new book in the BookRepository so that we can retrieve it.
 	Book savedBook = bookRepository.saveBook(request);
+
 
 	String location = "/books/" + savedBook.getIsbn();
 	
@@ -158,7 +157,7 @@ public class BookResource {
 	      return Response.status(200).entity(responseMap).build();
 	 }
    
-  /* 
+  
   
    @POST
    @Path("/{isbn}/reviews")
@@ -172,20 +171,28 @@ public class BookResource {
      book.getReview().add(reviewRequest);
 	  // Review savedReview = bookRepository.saveReview(reviewRequest);
 	   
-	   String location = "/books/" + book.getIsbn() +"/reviews/" + reviewRequest.getId() ;
+	   //String location = "/books/" + book.getIsbn() +"/reviews/" + reviewRequest.getId() ;
+	  
+	   
+	   ReviewDto reviewResponse = new ReviewDto();
+		reviewResponse.addLink(new LinkDto("view-review", "/books/" + book.getIsbn() + "/reviews/" + reviewRequest.getId(), "GET"));
+
+	return Response.status(201).entity(reviewResponse.getLinks()).build();
+	   
+	   /*
 	   System.out.println("my comment"+ reviewRequest.getComment());
 	   Map<String, Object> responseMap = new HashMap<String, Object>();
 	   List<LinkDto> links = new ArrayList<LinkDto>();
 	   links.add(new LinkDto("view-review", location, "GET"));
 	   responseMap.put("links", links);
 		
+	   
+		   return Response.status(200).entity(responseMap).build();
+	   
 	   */
-	
-//	   return Response.status(200).entity(responseMap).build();
-	   
-	   
-//   }
+ }
      
+   /*
    @POST
    @Path("/{isbn}/reviews")
    //@Produces({MediaType.APPLICATION_JSON})
@@ -207,7 +214,7 @@ public class BookResource {
            return Response.status(201).entity(bookResponse).build();
 
        
-   }
+   } */
    
    @GET
    @Path("/{isbn}/reviews/{id}")
