@@ -25,6 +25,7 @@ import javax.ws.rs.PUT;
 
 
 
+
 import java.util.*;
 
 import com.yammer.dropwizard.jersey.params.LongParam;
@@ -37,6 +38,7 @@ import edu.sjsu.cmpe.library.dto.AuthorDto;
 import edu.sjsu.cmpe.library.dto.AuthorsDto;
 import edu.sjsu.cmpe.library.dto.BookDto;
 import edu.sjsu.cmpe.library.dto.LinkDto;
+import edu.sjsu.cmpe.library.dto.LinksDto;
 import edu.sjsu.cmpe.library.dto.ReviewDto;
 import edu.sjsu.cmpe.library.dto.ReviewsDto;
 import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
@@ -70,7 +72,9 @@ public class BookResource {
 		"/books/" + book.getIsbn(), "PUT"));
 	bookResponse.addLink(new LinkDto("delete-book", "/books/"+ book.getIsbn(),"DELETE" ));
 	bookResponse.addLink(new LinkDto("create-review", "/books/"+ book.getIsbn() + "/reviews", "POST") );
-	
+	if (book.getReview().size() > 0) {
+        bookResponse.addLink(new LinkDto("view-all-reviews", "/books/" + book.getIsbn() +"/reviews", "GET"));
+	}
 	return bookResponse;
     }
 
@@ -146,12 +150,16 @@ public class BookResource {
 	    links.add(new LinkDto("update-book","/books/" + book.getIsbn(),"PUT"));
 	    links.add(new LinkDto("delete-book","/books/" + book.getIsbn(),"DELETE"));
 	    links.add(new LinkDto("create-review","/books/" + book.getIsbn() + "/reviews","POST"));
-
+	    if (book.getReview().size() > 0) {
+            links.add(new LinkDto("view-all-reviews", "/books/" + book.getIsbn() +"/reviews", "GET"));
+	    }
 	    responseMap.put("links", links);
 
 	      return Response.status(200).entity(responseMap).build();
 	 }
    
+  /* 
+  
    @POST
    @Path("/{isbn}/reviews")
    @Timed(name= "create-reviews")
@@ -171,66 +179,57 @@ public class BookResource {
 	   links.add(new LinkDto("view-review", location, "GET"));
 	   responseMap.put("links", links);
 		
+	   */
+	
+//	   return Response.status(200).entity(responseMap).build();
 	   
-	 //  Book retrieveBook = bookRepository.getBookByISBN(isbn.get());
-/*
-		Review.setId(id);
-		retrieveBook.getReview().add(reviews);
-		review_id++;
+	   
+//   }
+     
+   @POST
+   @Path("/{isbn}/reviews")
+   //@Produces({MediaType.APPLICATION_JSON})
+   //@Consumes({MediaType.APPLICATION_JSON})
+   @Timed(name = "create-review")
+   public Response createReview(@PathParam("isbn") LongParam isbn, Review reviewToAdd) {
+       
 
-	  // public Response createBook(Book request) {
-	*/   
-	   return Response.status(200).entity(responseMap).build();
-	   
-	   
+           Book book = bookRepository.getBookByISBN(isbn.get());
+           List<Review> reviews = book.getReview();
+           reviewToAdd.setId(reviews.size() + 1);
+           reviews.add(reviewToAdd);
+           book.setReview(reviews);
+           bookRepository.updateBook(book);
+
+           LinksDto bookResponse = new LinksDto();
+           bookResponse.addLink(new LinkDto("view-review", "/books/" + book.getIsbn()+ "/reviews/" + reviewToAdd.getId(), "GET"));
+
+           return Response.status(201).entity(bookResponse).build();
+
+       
    }
- /*  
+   
    @GET
    @Path("/{isbn}/reviews/{id}")
-   @Timed(name= "view-reviews")
-   public Response viewReviews(@PathParam("isbn") LongParam isbn,@PathParam("id") Long id){
-	 //  Book book = bookRepository.getBookByISBN(isbn.get());
-	//   book.getReview();
-	   Book book = bookRepository.getBookByISBN(isbn.get());
-	    // List<Review> reviewR= book.getReview(id);
-	 
-	   ReviewDto reviewResponse = new ReviewDto(book.getReview(id));
-	   reviewResponse.addLink(new LinkDto("view-review", "/books/" + book.getIsbn() + "/reviews/" + book.getReview(id) , "GET"));
-	return Response.status(200).entity(reviewResponse).build();
-	   
-   }
-    */
-   /*
-   @GET
-   @Path("/{isbn}/reviews/{review_id}")
-   @Timed(name = "view-reviews")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Timed(name = "view-review")
+   public Response viewReview(@PathParam("isbn") LongParam isbn, @PathParam("id") int id) {
+      
+           Book book = bookRepository.getBookByISBN(isbn.get());
+           List<Review> reviews = book.getReview();
+           Review review = reviews.get(id);
 
-   public Response viewReview (@PathParam("isbn") LongParam isbn,@PathParam("review_id") int reviewid ) {
-    int i=0;
-   	Book book = bookRepository.getBookByISBN(isbn.get());
-   	
-   	/*
-      	ReviewDto reviewResponse = new ReviewDto(book.getbookReview(reviewid));
-   	reviewResponse.addLink(new LinkDto("view-book-review", "/books/" + book.getIsbn()+"/reviews/", "GET"));
+           ReviewDto reviewResponse = new ReviewDto(review);
+           reviewResponse.addLink(new LinkDto("view-review", "/books/" + isbn + "/reviews/" + id, "GET"));
 
-   	return reviewResponse;
-   
-   	while (book.getbookReview(reviewid).getId()!=reviewid)
-	{
-		i++;
-	}
-   	
-   	
-    ReviewDto reviewResponse = new ReviewDto(book.getbookReview(reviewid));
-	   reviewResponse.addLink(new LinkDto("view-reviews", "/books/" + book.getIsbn() + "/reviews/" + reviewid , "GET"));
-	return Response.status(200).entity(reviewResponse).build();
-	   
-}
-  */
+           return Response.status(200).entity(reviewResponse).build();
+
+          }
+
    
    @GET
    @Path("/{isbn}/reviews")
-   @Produces({MediaType.APPLICATION_JSON})
+ //  @Produces({MediaType.APPLICATION_JSON})
    @Timed(name = "view-all-reviews")
    public Response viewAllReviews(@PathParam("isbn") LongParam isbn) {
        
@@ -243,6 +242,8 @@ public class BookResource {
 
        
    }
+   
+   
    @GET
    @Path("/{isbn}/authors/{id}")
    @Produces({MediaType.APPLICATION_JSON})

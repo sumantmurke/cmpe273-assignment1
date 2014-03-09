@@ -33,6 +33,7 @@ public interface BookRepositoryInterface {
 	void deleteBook(Book book);
 	
 	Review saveReview(Review reviewRequest);
+	void updateBook(Book updatedBook);
 
     // TODO: add other operations here!
 }

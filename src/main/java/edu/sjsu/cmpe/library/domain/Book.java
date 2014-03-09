@@ -1,13 +1,11 @@
 package edu.sjsu.cmpe.library.domain;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.yammer.dropwizard.jersey.params.LongParam;
+
 
 @JsonPropertyOrder({"isbn","title","publication-date","language","num-pages","status","reviews","authors"})
 public class Book {
@@ -32,10 +30,9 @@ public class Book {
 	private String status;
 
 	@JsonProperty
-	private ArrayList<Review> reviews = new ArrayList<Review>();
+	private List<Review> reviews ;
 
-	// @JsonProperty
-	//private Authors[] authors;
+	
 	@JsonProperty("authors")
     private List<Authors> authors;
 
@@ -102,13 +99,14 @@ public class Book {
 		this.status= status;
 	}
 
-	public ArrayList<Review> getReview(){
-		return reviews;
+	  public List<Review> getReview() {
+	        return reviews;
+	    }
 
-	}
-	public void setReview(ArrayList<Review> reviews){
-		this.reviews= reviews;
-	}
+	    public void setReview(List<Review> reviews) {
+	        this.reviews = reviews;
+	    }
+	
 	
 	public Review getbookReview(int id){
 		return reviews.get(id);

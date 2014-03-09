@@ -13,7 +13,7 @@ public class Review {
 		this.id= reviewId;
 	}
 
-	public long getRating() {
+	public int getRating() {
 		return rating;
 	}
 

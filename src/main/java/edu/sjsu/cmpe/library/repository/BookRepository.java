@@ -84,5 +84,8 @@ public class BookRepository implements BookRepositoryInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-    
+	
+	public void updateBook(Book updatedBook) {
+	        bookInMemoryMap.replace(updatedBook.getIsbn(), updatedBook);
+	    }
 }
