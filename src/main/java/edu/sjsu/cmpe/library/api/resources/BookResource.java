@@ -16,12 +16,14 @@ import javax.ws.rs.PUT;
 //import org.eclipse.jetty.http.HttpStatus;
 
 
+
 import java.util.*;
 
 import com.yammer.dropwizard.jersey.params.LongParam;
 import com.yammer.metrics.annotation.Timed;
 
 import edu.sjsu.cmpe.library.domain.Book;
+import edu.sjsu.cmpe.library.domain.Review;
 import edu.sjsu.cmpe.library.dto.BookDto;
 import edu.sjsu.cmpe.library.dto.LinkDto;
 import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
@@ -140,11 +142,29 @@ public class BookResource {
    @POST
    @Path("/{isbn}/reviews")
    @Timed(name= "create-reviews")
-   public Response createReviews(@PathParam("isbn") LongParam isbn){
-	
+   public Response createReviews(Review reviewRequest,@PathParam("isbn") LongParam isbn){
+	  
+	 Book book = bookRepository.getBookByISBN(isbn.get());
+
+	   Review savedReview = bookRepository.saveReview(reviewRequest);
 	   
+	   String location = "/books/" + book.getIsbn() +"/reviews/" + savedReview.getId() ;
 	   
-	   return null;
+	   Map<String, Object> responseMap = new HashMap<String, Object>();
+	   List<LinkDto> links = new ArrayList<LinkDto>();
+	   links.add(new LinkDto("view-review", location, "GET"));
+	   responseMap.put("links", links);
+		
+	   
+	 //  Book retrieveBook = bookRepository.getBookByISBN(isbn.get());
+/*
+		Review.setId(id);
+		retrieveBook.getReview().add(reviews);
+		review_id++;
+
+	  // public Response createBook(Book request) {
+	*/   
+	   return Response.status(200).entity(responseMap).build();
 	   
 	   
    }

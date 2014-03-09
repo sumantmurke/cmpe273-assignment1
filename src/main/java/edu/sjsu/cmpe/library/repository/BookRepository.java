@@ -3,17 +3,19 @@ package edu.sjsu.cmpe.library.repository;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.sjsu.cmpe.library.domain.Book;
+import edu.sjsu.cmpe.library.domain.Review;
 
 public class BookRepository implements BookRepositoryInterface {
     /** In-memory map to store books. (Key, Value) -> (ISBN, Book) */
     private final ConcurrentHashMap<Long, Book> bookInMemoryMap;
-
+    private static HashMap<Long, Review> new_review_entry = new HashMap<Long,Review>();
     /** Never access this key directly; instead use generateISBNKey() */
     private long isbnKey;
-
+    private static Long id1 = (long) 1;
     public BookRepository(ConcurrentHashMap<Long, Book> bookMap) {
 	checkNotNull(bookMap, "bookMap must not be null for BookRepository");
 	bookInMemoryMap = bookMap;
@@ -40,6 +42,8 @@ public class BookRepository implements BookRepositoryInterface {
 	// Generate new ISBN
 	Long isbn = generateISBNKey();
 	newBook.setIsbn(isbn);
+	//newBook.setLanguage(language);
+	
 	// TODO: create and associate other fields such as author
 
 	// Finally, save the new book into the map
@@ -65,5 +69,14 @@ public class BookRepository implements BookRepositoryInterface {
     		
     }
     
-  
+    public Review saveReview(Review reviewRequest){
+    	
+    	reviewRequest.setId(id1);
+    	
+    	new_review_entry.put(id1, reviewRequest);
+    	id1++;
+    	return reviewRequest;
+    }
+    
+    
 }

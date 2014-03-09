@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe.library.repository;
 
 import edu.sjsu.cmpe.library.domain.Book;
+import edu.sjsu.cmpe.library.domain.Review;
 
 /**
  * Book repository interface.
@@ -30,6 +31,8 @@ public interface BookRepositoryInterface {
 
 
 	void deleteBook(Book book);
+	
+	Review saveReview(Review reviewRequest);
 
     // TODO: add other operations here!
 }
