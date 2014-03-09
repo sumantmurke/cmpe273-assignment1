@@ -36,7 +36,8 @@ public class Book {
 
 	// @JsonProperty
 	//private Authors[] authors;
-
+	@JsonProperty("authors")
+    private List<Authors> authors;
 
 	/**
 	 * @return the isbn
@@ -112,15 +113,14 @@ public class Book {
 	public Review getbookReview(int id){
 		return reviews.get(id);
 	}
-	/*
-    public String[] getAuthors() {
-    	return authors ;
+	
+	public List<Authors> getAuthors() {
+        return authors;
     }
 
-    public void setAuthors(String authors[]) {
-    	this. authors = authors;
+    public void setAuthors(List<Authors> authors) {
+        this.authors = authors;
     }
-	 */ 
 
 
 }

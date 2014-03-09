@@ -22,13 +22,17 @@ import javax.ws.rs.PUT;
 
 
 
+
+
 import java.util.*;
 
 import com.yammer.dropwizard.jersey.params.LongParam;
 import com.yammer.metrics.annotation.Timed;
 
+import edu.sjsu.cmpe.library.domain.Authors;
 import edu.sjsu.cmpe.library.domain.Book;
 import edu.sjsu.cmpe.library.domain.Review;
+import edu.sjsu.cmpe.library.dto.AuthorDto;
 import edu.sjsu.cmpe.library.dto.BookDto;
 import edu.sjsu.cmpe.library.dto.LinkDto;
 import edu.sjsu.cmpe.library.dto.ReviewDto;
@@ -237,7 +241,26 @@ public class BookResource {
 
        
    }
-   
+   @GET
+   @Path("/{isbn}/authors/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Timed(name = "view-author")
+   public Response viewAuthor(@PathParam("isbn") LongParam isbn, @PathParam("id") int id) {
+       
+           Book book = bookRepository.getBookByISBN(isbn.get());
+           List<Authors> authors = book.getAuthors();
+           
+           Authors author = authors.get(id);
+
+           AuthorDto authorResponse = new AuthorDto(author);
+           authorResponse.addLink(new LinkDto("view-author", "/books/" + isbn + "/authors/" + id, "GET"));
+
+           return Response.status(200).entity(authorResponse).build();
+
+       
+           
+       }
+  
    
 }
 
