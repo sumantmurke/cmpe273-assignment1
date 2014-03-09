@@ -17,6 +17,11 @@ import javax.ws.rs.PUT;
 
 
 
+
+
+
+
+
 import java.util.*;
 
 import com.yammer.dropwizard.jersey.params.LongParam;
@@ -26,6 +31,8 @@ import edu.sjsu.cmpe.library.domain.Book;
 import edu.sjsu.cmpe.library.domain.Review;
 import edu.sjsu.cmpe.library.dto.BookDto;
 import edu.sjsu.cmpe.library.dto.LinkDto;
+import edu.sjsu.cmpe.library.dto.ReviewDto;
+import edu.sjsu.cmpe.library.dto.ReviewsDto;
 import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
 
 @Path("/v1/books")
@@ -34,7 +41,7 @@ import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
 public class BookResource {
     /** bookRepository instance */
     private final BookRepositoryInterface bookRepository;
-
+    private int reviewId =1; 
     /**
      * BookResource constructor
      * 
@@ -145,10 +152,13 @@ public class BookResource {
    public Response createReviews(Review reviewRequest,@PathParam("isbn") LongParam isbn){
 	  
 	 Book book = bookRepository.getBookByISBN(isbn.get());
-
-	   Review savedReview = bookRepository.saveReview(reviewRequest);
+	
+	reviewRequest.setId(reviewId);
+	reviewId++;
+     book.getReview().add(reviewRequest);
+	  // Review savedReview = bookRepository.saveReview(reviewRequest);
 	   
-	   String location = "/books/" + book.getIsbn() +"/reviews/" + savedReview.getId() ;
+	   String location = "/books/" + book.getIsbn() +"/reviews/" + reviewRequest.getId() ;
 	   
 	   Map<String, Object> responseMap = new HashMap<String, Object>();
 	   List<LinkDto> links = new ArrayList<LinkDto>();
@@ -168,7 +178,22 @@ public class BookResource {
 	   
 	   
    }
-    
+ /*  
+   @GET
+   @Path("/{isbn}/reviews/{id}")
+   @Timed(name= "view-reviews")
+   public Response viewReviews(@PathParam("isbn") LongParam isbn,@PathParam("id") Long id){
+	 //  Book book = bookRepository.getBookByISBN(isbn.get());
+	//   book.getReview();
+	   Book book = bookRepository.getBookByISBN(isbn.get());
+	    // List<Review> reviewR= book.getReview(id);
+	 
+	   ReviewDto reviewResponse = new ReviewDto(book.getReview(id));
+	   reviewResponse.addLink(new LinkDto("view-review", "/books/" + book.getIsbn() + "/reviews/" + book.getReview(id) , "GET"));
+	return Response.status(200).entity(reviewResponse).build();
+	   
+   }
+    */
     
 }
 

@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe.library.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import edu.sjsu.cmpe.library.domain.Review;
@@ -15,13 +17,16 @@ public class ReviewDto extends LinksDto {
 		// TODO Auto-generated constructor stub
 	}
    
+
 	public Review getReview() {
 	return review;
     }
 
+	
     
     public void setReview(Review review) {
 	this.review = review;
     }
 
+   
 }

@@ -1,16 +1,16 @@
 package edu.sjsu.cmpe.library.domain;
 
 public class Review {
-	private Long id;
+	private int id;
 	private int rating;
 	private String comment;
 
-	public Long getId(){
+	public int getId(){
 		return id;
 	}
 
-	public void setId(Long id){
-		this.id= id;
+	public void setId(int reviewId){
+		this.id= reviewId;
 	}
 
 	public long getRating() {
