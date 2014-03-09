@@ -1,24 +1,34 @@
 package edu.sjsu.cmpe.library.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.sjsu.cmpe.library.domain.Authors;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.List;
+import edu.sjsu.cmpe.library.domain.Author;
 
+@JsonPropertyOrder(alphabetic = true)
 public class AuthorsDto extends LinksDto {
+    private Author[] author;
 
-    @JsonProperty("authors")
-    private List<Authors> authors;
+    /**
+     * @param book
+     */
+    public AuthorsDto(Author[] author) {
+    	super();
+    	this.author = author;
+        }
 
-    public AuthorsDto(List<Authors> authors) {
-        this.setAuthors(authors);
+	/**
+     * @return the author
+     */
+    public Author[] getAuthor() {
+	return author;
     }
 
-    public List<Authors> getAuthors() {
-        return authors;
+    /**
+     * @param author
+     *            the author to set
+     */
+    public void setAuthor(Author[] author) {
+	this.author = author;
     }
 
-    public void setAuthors(List<Authors> authors) {
-        this.authors = authors;
-    }
 }

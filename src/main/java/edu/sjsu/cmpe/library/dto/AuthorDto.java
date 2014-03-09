@@ -1,22 +1,32 @@
 package edu.sjsu.cmpe.library.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.sjsu.cmpe.library.domain.Authors;
+import edu.sjsu.cmpe.library.domain.Author;
 
 public class AuthorDto extends LinksDto {
+	private Author author;
+	
+	public AuthorDto(Author author) {
+		super();
+		this.author = author;
+	    }
+	    
+	    public AuthorDto(){
+	    	super();
+	    }
 
-    @JsonProperty("author")
-    private Authors author;
 
-    public AuthorDto(Authors author) {
-        this.setAuthor(author);
-    }
+	/**
+	 * @return the author
+	 */
+	public Author getAuthor() {
+		return author;
+	}
 
-    public Authors getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Authors author) {
-        this.author = author;
-    }
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
+	
 }

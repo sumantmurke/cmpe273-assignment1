@@ -1,7 +1,6 @@
 package edu.sjsu.cmpe.library.repository;
 
 import edu.sjsu.cmpe.library.domain.Book;
-import edu.sjsu.cmpe.library.domain.Review;
 
 /**
  * Book repository interface.
@@ -19,6 +18,8 @@ public interface BookRepositoryInterface {
      * @return a newly created book instance with auto-generated ISBN
      */
     Book saveBook(Book newBook);
+    void deleteBook(Long isbn);
+    Book updateBook(Long isbn, String changeParam);
 
     /**
      * Retrieve an existing book by ISBN
@@ -28,12 +29,6 @@ public interface BookRepositoryInterface {
      * @return a book instance
      */
     Book getBookByISBN(Long isbn);
-
-
-	void deleteBook(Book book);
-	
-	Review saveReview(Review reviewRequest);
-	void updateBook(Book updatedBook);
 
     // TODO: add other operations here!
 }
